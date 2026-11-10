@@ -1,0 +1,15 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: litmap-frontend:latest
+    container_name: litmap-frontend
+    restart: unless-stopped
+    ports:
+      # снаружи и внутри контейнера — 3011
+      - "3011:3011"
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3011
