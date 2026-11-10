@@ -4,11 +4,12 @@
 FROM node:22-bookworm-slim AS build
 WORKDIR /app
 
-# NODE_ENV=production на этапе сборки обязателен: сборка и запуск с разным NODE_ENV
-# дают несовместимый .output, сервер падает при старте.
+# NODE_ENV на этапе сборки НЕ выставляется в production: @nuxt/eslint объявлен
+# в nuxt.config.ts (modules), но стоит в devDependencies, и с production-режимом
+# `npm ci` его пропустит — сборка упадёт с «module @nuxt/eslint could not be loaded».
+# Сам `nuxt build` при записи .output использует production-режим — отдельно его ставить не нужно.
 # NUXT_TELEMETRY_DISABLED — отключает анонимную телеметрию Nuxt.
-ENV NODE_ENV=production \
-    NUXT_TELEMETRY_DISABLED=1
+ENV NUXT_TELEMETRY_DISABLED=1
 
 # Зависимости отдельным слоем — пересобираются только при смене lock-файла.
 # postinstall (`nuxt prepare`) здесь безопасен: package.json уже скопирован,
